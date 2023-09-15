@@ -2,15 +2,14 @@
 import { ref } from 'vue'
 
 const API_URL = "https://db.ygoprodeck.com/api/v7/cardinfo.php?"
-const card = ref([])
+const CARD = ref([])
 const status = ref("")
 
 async function getCard() {
-  const response = await fetch(`${API_URL}name=Dark Magician`)
+  const response = (await fetch(`${API_URL}name=Dark Magician`))
   const data = await response.json()
-  card.value = data.data[0]
-  status.value = `\nATK: ${card.value.atk} / DEF: ${card.value.def}`
-  console.log(data.data[0])
+  const card = CARD.value = data.data[0]
+  status.value = `\nATK: ${card.atk} / DEF: ${card.def}`
 }
 
 </script>
@@ -23,8 +22,8 @@ async function getCard() {
     <button @click="getCard">Get Card</button>
   </div>
   <div>
-    <h1>{{ card.name }}</h1>
-    <h2>{{ card.desc }}</h2>
+    <h1>{{ CARD.name }}</h1>
+    <h2>{{ CARD.desc }}</h2>
     <p>{{ status }}</p>
   </div>
 </template>
