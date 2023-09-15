@@ -1,47 +1,24 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+
+const card = ref([])
+
+async function getCard() {
+  const response = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Dark Magician`)
+  const data = await response.json()
+  card.value = data.data[0]
+  console.log(data.data[0])
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div>
+    <button @click="getCard">Get Card</button>
+  </div>
+  <div>
+    <h1>{{ card.name }}</h1>
+    <h2>{{ card.desc }}</h2>
+    <span>ATK: {{ card.atk }} / DEF: {{ card.def }}</span>
+  </div>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
