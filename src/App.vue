@@ -30,7 +30,7 @@ async function getCardByName() {
     <button @click="getCardByName">Get Card</button>
   </div>
   <div id="card-container">
-    <div v-for="card in cards" class="card-block">
+    <div v-for="card in cards" :key="card.id" class="card-block">
       <h1>{{ card.name }}</h1>
       <p>{{ card.desc }}</p>
       <span v-if="card.type !== undefined && card.type.includes('Monster')">ATK: {{ card.atk }} / DEF: {{ card.def }}</span>
