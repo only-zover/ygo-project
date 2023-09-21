@@ -22,16 +22,11 @@ async function getCardByName() {
     cards.value = await fetchCardData(NAME_PATH)
 }
 
-function updateCardInput(event) {
-  cardInput = event.target.value
-}
-
-//
 </script>
 
 <template>
   <div>
-    <input id="card-input" type="text" @input="updateCardInput" :value="cardInput">
+    <input id="card-input" type="text" v-model="cardInput">
     <button @click="getCardByName">Get Card</button>
   </div>
   <div id="card-container">
