@@ -3,39 +3,79 @@ import { ref } from 'vue'
 
 const API_URL = import.meta.env.VITE_BASE_URL
 const NAME_PATH = import.meta.env.VITE_NAME_PATH
-const card = ref({type: ''})
+const cards = ref({type: ''})
+const isMonsterCard = () => cards.value.type.includes('Monster');
 let cardInput = ''
 
-async function getCard() {
+async function fetchCardData(pathName) {
   try {
-    const response = await fetch(`${API_URL}${NAME_PATH}${cardInput}`)
-    const data = await response.json() 
-    card.value = data["data"][0]
+    const response = await fetch(`${API_URL}${pathName}${cardInput}`)
+    const data = await response.json()
+    console.log(data["data"])
+    return data["data"] 
   } catch (error) {
     console.error(error)
   }
 }
 
-function updateCardInput(event) {
-  const inputValue = event.target.value
-
-  if (inputValue.trim() !== '') {cardInput = inputValue}
-  else {cardInput = 'Mekk-Knight Avram'}
+async function getCardByName() {
+    cards.value = await fetchCardData(NAME_PATH)
 }
+
+function updateCardInput(event) {
+  cardInput = event.target.value
+}
+
+//
 </script>
 
 <template>
   <div>
     <input id="card-input" type="text" @input="updateCardInput" :value="cardInput">
-    <button @click="getCard">Get Card</button>
+    <button @click="getCardByName">Get Card</button>
   </div>
-  <div>
-    <h1>{{ card.name }}</h1>
-    <h2>{{ card.desc }}</h2>
-    <p v-if="card.type.includes('Monster')">ATK: {{ card.atk }} / DEF: {{ card.def }}</p>
-    <p>{{ card.race }} {{ card.type }}</p>
+  <div id="card-container">
+    <div v-for="card in cards" class="card-block">
+      <h1>{{ card.name }}</h1>
+      <p>{{ card.desc }}</p>
+      <span v-if="card.type !== undefined && card.type.includes('Monster')">ATK: {{ card.atk }} / DEF: {{ card.def }}</span>
+      <span>{{ card.race }} {{ card.type }}</span>
+    </div>
   </div>
   <div>
     <a href="./page2.vue">To page 2</a>
   </div>
 </template>
+
+<style>
+/* #card-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+} */
+
+#card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+  gap: 20px; /* Espaço entre as colunas */
+}
+
+/* Media query para ajustar o layout em telas menores */
+@media (max-width: 768px) {
+  #card-container {
+    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+  }
+}
+
+/* Media query para ajustar o layout em telas muito pequenas */
+@media (max-width: 480px) {
+  #card-container {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+}
+
+.card-block {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+}
+</style>
